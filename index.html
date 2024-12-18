@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .add-movie,
+        .filter-movies,
+        .movie-list,
+        .highest-rating {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .movie-list ul {
+            list-style-type: none;
+        }
+
+        .movie-list li {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Movie Collection</h1>
+
+        <div class="add-movie">
+            <h2>Add a New Movie</h2>
+            <form id="addMovieForm">
+                <input type="text" id="title" placeholder="Title" required>
+                <input type="text" id="genre" placeholder="Genre" required>
+                <input type="number" id="rating" placeholder="Rating" min="0" max="10" step="0.1" required>
+                <input type="number" id="releaseYear" placeholder="Release Year" required>
+                <button type="submit">Add Movie</button>
+            </form>
+        </div>
+
+        <div class="filter-movies">
+            <h2>Filter Movies</h2>
+            <input type="text" id="genreFilter" placeholder="Enter Genre">
+            <button id="filterButton">Filter</button>
+        </div>
+
+
+
+        <div class="highest-rating">
+            <h2>HighestRating</h2>
+            <button id="RatingButton">HighestRating</button>
+        </div>
+
+        <div class="filter-movies">
+            <h2>Filter Movies Year Wise</h2>
+            <input type="text" id="yearFilter" placeholder="Enter year..">
+            <button id="yearButton">Filter</button>
+        </div>
+        <div class="movie-list">
+            <h2>Movies</h2>
+            <ul id="movieList"></ul>
+        </div>
+    </div>
+    
+    <script>
+        const movies = [
+            { title: "Inception", genre: "Sci-Fi", rating: 8.8, releaseYear: 2010 },
+            { title: "The Dark Knight", genre: "Action", rating: 9.0, releaseYear: 2008 },
+            { title: "Interstellar", genre: "Sci-Fi", rating: 8.6, releaseYear: 2014 }
+        ];
+
+        const movieList = document.getElementById('movieList');
+        const addMovieForm = document.getElementById('addMovieForm');
+        const genreFilter = document.getElementById('genreFilter');
+        const filterButton = document.getElementById('filterButton');
+        const yearButton = document.getElementById('yearButton');
+        const yearfilter = document.getElementById('yearFilter');
+
+        const displayMovies = (collection) => {
+            movieList.innerHTML = '';
+            collection.forEach(movie => {
+                const li = document.createElement('li');
+                li.textContent = `${movie.title} (${movie.releaseYear}) - ${movie.genre}, Rating: ${movie.rating}`;
+                movieList.appendChild(li);
+            });
+        };
+
+        addMovieForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newMovie = {
+                title: document.getElementById('title').value,
+                genre: document.getElementById('genre').value,
+                rating: parseFloat(document.getElementById('rating').value),
+                releaseYear: parseInt(document.getElementById('releaseYear').value, 10)
+            };
+            movies.push(newMovie);
+            displayMovies(movies);
+            addMovieForm.reset();
+        });
+
+        filterButton.addEventListener('click', () => {
+            const genre = genreFilter.value.trim();
+            const filteredMovies = genre ? movies.filter(movie => movie.genre.toLowerCase() === genre.toLowerCase()) : movies;
+            displayMovies(filteredMovies);
+        });
+
+        yearButton.addEventListener('click', () => {
+            const releaseYear = yearfilter.value.trim();
+            const filteredrelese = releaseYear ? movies.filter(movie => movie.releaseYear > 2010) : movies;
+            displayMovies(filteredrelese);
+        });
+
+        const findHighestRatedMovie = collection => {
+            return collection.reduce((highest, movies) => movies.rating > highest.rating ? movies : highest);
+        };
+
+        const ratingbutton = document.querySelector("#RatingButton");
+
+        ratingbutton.addEventListener('click', () => {
+            const a = findHighestRatedMovie(movies);
+            movieList.innerHTML = '';
+            const li = document.createElement('li');
+            li.textContent = `${a.title} (${a.releaseYear}) - ${a.genre}, Rating: ${a.rating}`;
+            movieList.appendChild(li);
+        });
+
+        displayMovies(movies);
+
+    </script>
+</body>
+
+</html>
